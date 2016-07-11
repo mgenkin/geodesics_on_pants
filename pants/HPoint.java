@@ -13,6 +13,9 @@ public class HPoint{
     // passing two doubles assumes it's an upper half plane point
     this(new UpperHalfPlanePoint(realPart, imagPart));
   }
+  public HPoint(ComplexNumber cn){
+    this(cn.realPart, cn.imagPart);
+  }
   public ConformalDiscPoint toConformalDisc(UpperHalfPlanePoint halfPlanePt){
     //z -> (z-i)/(iz-1)
     ComplexNumber a = new ComplexNumber(1.0, 0.0);
@@ -20,7 +23,7 @@ public class HPoint{
     ComplexNumber c = new ComplexNumber(0.0, 1.0);
     ComplexNumber d = new ComplexNumber(-1.0, 0.0);
     LinearFractionalIsometry toCD = new LinearFractionalIsometry(a, b, c, d);
-    return toCD.apply(halfPlanePt);
+    return new ConformalDiscPoint(toCD.apply(halfPlanePt));
   }
   public UpperHalfPlanePoint toHalfPlane(ConformalDiscPoint confDiscPt){
     //z -> (-z+i)/(-iz+1)  
@@ -29,6 +32,6 @@ public class HPoint{
     ComplexNumber c = new ComplexNumber(0.0, -1.0);
     ComplexNumber d = new ComplexNumber(1.0, 0.0);
     LinearFractionalIsometry toHP = new LinearFractionalIsometry(a, b, c, d);
-    return toHP.apply(confDiscPt);
+    return new UpperHalfPlanePoint(toHP.apply(confDiscPt));
   }
 }

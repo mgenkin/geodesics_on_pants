@@ -17,12 +17,23 @@ public class HLine{
     this.idealPt1 = new HPoint(center+distance, 0.0);
     this.idealPt2 = new HPoint(center-distance, 0.0);
     // to draw this in the 
-    this.
+    this.confDiscCenterRadius = confDiscArray(this.idealPt1, this.idealPt2);
   }
-  public double[] drawHP(){
-    
-  }
-  public double[] drawCD(){
-    
+  public double[] confDiscArray(HPoint idealPt1, HPoint idealPt2){
+    // separated this into its own method because it's a lot of computation
+    // returns information needed for drawing the line in the conformal disc
+    double[] outArray = new double [4];
+    double u1 = idealPt1.confDiscPt.realPart;
+    double u2 = idealPt1.confDiscPt.imagPart; 
+    double v1 = idealPt2.confDiscPt.realPart;
+    double v2 = idealPt2.confDiscPt.imagPart;
+    // derived from formula found here: https://en.wikipedia.org/wiki/Poincar%C3%A9_disk_model
+    double a = (u2*(v1*v1+v2*v2)-v2*(u1*u1+u2*u2)+u2-v2)/(u1*v2-u2*v1);
+    double b = (v1*(u1*u1+u2*u2)-u1*(v1*v1+v2*v2)+v1-u2)/(u1*v2-u2*v1);
+    outArray[0] = a; // center x
+    outArray[1] = b; // center y
+    outArray[2] = Math.sqrt(1+a*a+b*b); // circle radius
+    outArray[3] = 2*Math.asin(Math.sqrt(Math.pow(u1-v1, 2)+Math.pow(u2-v2, 2))/2*outArray[2]); // arc angle
+    return outArray;
   }
 }

@@ -13,6 +13,6 @@ public class LinearFractionalIsometry{
     // z -> (az+b)/(cz+d)
     ComplexNumber numerator = z.times(a).plus(b);
     ComplexNumber denominator = z.times(c).plus(d);
-    return numerator.times(denominator.multInverse())
+    return numerator.times(denominator.multInverse());
   }
 }
