@@ -1,6 +1,12 @@
 public class HPoint{
   public UpperHalfPlanePoint halfPlanePt;
   public ConformalDiscPoint confDiscPt;
+      //J: We will also want a ProjectiveDiscPoint
+      //J: It will offer certain advantages which we will need. For example, when drawing our geodesic, we will have to intersect
+      //J: it with sides of various translated hexagons. If the geodesics in the model are represented by circular arcs, 
+      //J: we will have to intersect arcs of circles, which means solving a system of quadratic equations.
+      //J: In the projective model, intersecting geodesics is the same as intersecting lines, which is easy.
+      //J: It is easy to go between the two disc models, at the level of points, using a radius scaling (see wikipedia page).
   public HPoint(UpperHalfPlanePoint halfPlanePt){
     this.halfPlanePt = halfPlanePt;
     this.confDiscPt = toConformalDisc(halfPlanePt);
@@ -34,4 +40,4 @@ public class HPoint{
     LinearFractionalIsometry toHP = new LinearFractionalIsometry(a, b, c, d);
     return new UpperHalfPlanePoint(toHP.apply(confDiscPt));
   }
-}
+} 
