@@ -36,7 +36,7 @@ public class HLine{
     outArray[1] = b; // center y
     outArray[2] = Math.sqrt(1+a*a+b*b); // circle radius
         //J: Isn't the circle radius the distance from (a,b) to idealPt1 and idealPt2? It is true that it should only depend on the norm of (a,b), but what is the derivation?
-        //J: I'm skeptical of this formula because as (a,b) approaches to having norm 1, the circle radius should go to infinity
+        //J: I'm skeptical of this formula because as (a,b) approaches to having norm 1, the circle radius should go to 0
     outArray[3] = 2*Math.asin(Math.sqrt(Math.pow(u1-v1, 2)+Math.pow(u2-v2, 2))/2*outArray[2]); // arc angle
         //J: This arc angle isn't quite enough to draw the thing... I think we need both the starting absolute angle and ending absolute angle
     return outArray;
