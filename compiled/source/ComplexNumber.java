@@ -33,7 +33,4 @@ public class ComplexNumber{
   public double squareNorm(){
     return Math.pow(this.realPart, 2)+Math.pow(this.imagPart, 2);
   }
-  public double squareDist(ComplexNumber other){
-    return Math.pow(this.realPart - other.realPart, 2)+Math.pow(this.imagPart - other.imagPart, 2);
-  }
 }
