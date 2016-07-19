@@ -8,9 +8,9 @@ public class HLine{
     UpperHalfPlanePoint pt2 = hpt2.halfPlanePt;
     // find the two ideal points (on the x-axis) whose geodesic passes through pt1 and pt2
     // first, I will find the center of the circle whose arc is that geodesic
-    //double center = (pt2.squareNorm() - pt1.squareNorm()) / 2*(pt2.realPart - pt1.realPart);
-    //J: I don't understand the above formula. I thought you have to intersect the perpendicular bisector of segment pt1/pt2 with the x-axis?
-    //M: It was wrong.  Now it's fixed.
+    double diffX = pt2.realPart-pt1.realPart;
+    double diffY = pt2.imagPart-pt1.imagPart;
+    double center = (diffY/(-diffX))*(diffY/2 - pt2.imagPart) + pt1.realPart + diffX/2;
     // now I will find the radius of that circle
     double distance = Math.sqrt(Math.pow((pt1.realPart - center), 2) + Math.pow(pt1.imagPart, 2));
     this.halfPlaneCenterRadius[0] = center;
