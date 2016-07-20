@@ -30,8 +30,8 @@ public class HLine{
     double v1 = idealPt2.confDiscPt.realPart;
     double v2 = idealPt2.confDiscPt.imagPart;
     // derived from formula found here: https://en.wikipedia.org/wiki/Poincar%C3%A9_disk_model
-    double a = 2*(u2-v2)/(u1*v2-u2*v1);
-    double b = -2*(u1-v1)/(u1*v2-u2*v1);
+    double a = (u2-v2)/(u1*v2-u2*v1);
+    double b = -(u1-v1)/(u1*v2-u2*v1);
     outArray[0] = -a; // center x
     outArray[1] = -b; // center y
     outArray[2] = Math.sqrt(a*a+b*b-1); // circle radius
