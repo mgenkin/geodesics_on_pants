@@ -14,9 +14,9 @@ ComplexNumber unconvert(float x, float y){
 
 void drawLineUHP(HLine ln){
   // TODO: implement line if you get Infinity
-  double[] hpcr = ln.halfPlaneCenterRadius; 
-  arc(convert(hpcr[0]), 0, convert(hpcr[1])*2, convert(hpcr[1])*2, 0, PI);
-  ellipse( convert(hpcr[0]), 0, 2, 2);
+  double[] arr = ln.halfPlaneArray; 
+  arc(convert(arr[0]), 0, convert(arr[1])*2, convert(arr[1])*2, 0, PI);
+  ellipse( convert(arr[0]), 0, 2, 2);
 }
 
 void drawPtUHP(HPoint pt){
@@ -24,41 +24,68 @@ void drawPtUHP(HPoint pt){
 }
 
 void drawLineCD(HLine ln){
-  double[] cdcr = ln.confDiscCenterRadius;
-  println(cdcr);   
-  ellipse(convert(cdcr[0]), convert(cdcr[1]), convert(cdcr[2])*2, convert(cdcr[2])*2);
+  double[] arr = ln.confDiscArray;
+  println(arr);   
+  ellipse(convert(arr[0]), convert(arr[1]), convert(arr[2])*2, convert(arr[2])*2);
 }
 
 void drawPtCD(HPoint pt){
   ellipse( convert(pt.confDiscPt.realPart), convert(pt.confDiscPt.imagPart), 2, 2);
 }
 
+void drawLinePD(HLine ln){
+  double[] arr = ln.projDiscArray; 
+  line(convert(arr[0]), convert(arr[1]), convert(arr[2]), convert(arr[3]));
+}
+
+void drawPtPD(HPoint pt){
+  ellipse( convert(pt.projDiscPt.realPart), convert(pt.projDiscPt.imagPart), 2, 2);
+}
+
 void setup(){
   size(500,500);
   noFill();
-  translate(width/2, width/2);
-  rotate(PI);
+  // translate(width/2, width/2);
+  // rotate(PI);
 }
 
 void draw(){
   background(255);
+  stroke(0);
+  // set up x,y axes oriented properly with 0 in the center
   translate(width/2, width/2);
   scale(1, -1);
-  // draw the conformal disc
+  // draw the unit disc (for the conformal or projective model)
   ellipse(0, 0, width, width);
+  // get mouse location in math coordinates
   float mouseX_shifted = mouseX-width/2;
   float mouseY_shifted = width/2 - mouseY;
   ComplexNumber mouse_location = unconvert(mouseX_shifted, mouseY_shifted);
+  
   if (mouse_location.squareNorm() > 1.0) {
     p2 = new HPoint(1.0, 1.0);
   } else {
-    ConformalDiscPoint cdpt = new ConformalDiscPoint(mouse_location);
-    p2 = new HPoint(cdpt);
+    ProjectiveDiscPoint pt = new ProjectiveDiscPoint(mouse_location);
+    p2 = new HPoint(pt);
   }
-  drawPtCD(p1);
-  drawPtCD(p2);
   HLine ln = new HLine(p2, p1);
-  drawLineCD(ln);
-  drawPtCD(ln.idealPt1);
-  drawPtCD(ln.idealPt2);
+  HLine ln_perp = ln.perpendicularThrough(p2);
+
+  // draw projective disc geodesics in green
+  stroke(0, 255, 0);
+  drawPtPD(p1);
+  drawPtPD(p2);
+  drawLinePD(ln);
+  drawLinePD(ln_perp);
+  drawPtPD(ln.idealPt1);
+  drawPtPD(ln.idealPt2);
+
+  // draw conformal disc geodesics in blue
+  // stroke(0, 0, 255);
+  // drawPtCD(p1);
+  // drawPtCD(p2);
+  // drawLineCD(ln);
+  // drawLineCD(ln_perp);
+  // drawPtCD(ln.idealPt1);
+  // drawPtCD(ln.idealPt2);
 }
