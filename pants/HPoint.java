@@ -37,8 +37,13 @@ public class HPoint{
   }
   public ConformalDiscPoint toConformalDisc(ProjectiveDiscPoint projDiscPt){
     //x -> x/(1+sqrt(1-x^2-y^2)), y -> y/(1+sqrt(1-x^2-y^2))
-    double x = projDiscPt.realPart / (1 + Math.sqrt(1-projDiscPt.squareNorm()));
-    double y = projDiscPt.imagPart / (1 + Math.sqrt(1-projDiscPt.squareNorm()));
+    double denominator = 1 + Math.sqrt(1-projDiscPt.squareNorm());
+    if (projDiscPt.squareNorm() > 1.0){
+      // if x is a projDiscPt is accidentally a little outside the disc, just set square norm to 1
+      denominator = 1.0;
+    }
+    double x = projDiscPt.realPart / denominator;
+    double y = projDiscPt.imagPart / denominator;
     return new ConformalDiscPoint(x, y);
   }
   public UpperHalfPlanePoint toHalfPlane(ConformalDiscPoint confDiscPt){

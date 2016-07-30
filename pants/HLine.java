@@ -1,31 +1,54 @@
 public class HLine{
   public HPoint idealPt1;
   public HPoint idealPt2;
-  public ComplexNumber projPolarPt;
+  public ProjectiveDiscPoint projPolarPt;
   public double[] halfPlaneArray = new double[2]; // half plane drawing info, this computation is done right in the constructor
   public double[] confDiscArray = new double[5];  // conformal disc drawing info
   public double[] projDiscArray = new double[4];  // projective disc drawing info
-  public HLine(HPoint hpt1, HPoint hpt2){
-    UpperHalfPlanePoint pt1 = hpt1.halfPlanePt;
-    UpperHalfPlanePoint pt2 = hpt2.halfPlanePt;
-    // find the two ideal points (on the x-axis) whose geodesic passes through pt1 and pt2
-    // first, I will find the center of the circle whose arc is that geodesic
-    double diffX = pt2.realPart-pt1.realPart;
-    double diffY = pt2.imagPart-pt1.imagPart;
-    double center = (diffY/(-diffX))*(diffY/2 - pt2.imagPart) + pt1.realPart + diffX/2;
-    // now I will find the radius of that circle
-    double distance = Math.sqrt(Math.pow((pt1.realPart - center), 2) + Math.pow(pt1.imagPart, 2));
-    this.halfPlaneArray[0] = center;
-    this.halfPlaneArray[1] = distance;
-    // the ideal points are the ones where the circle hits the x-axis (on its diameter)
-    this.idealPt1 = new HPoint(center+distance, 0.0);
-    this.idealPt2 = new HPoint(center-distance, 0.0);
-    // calculate drawing info
+
+
+    
+  //   // the ideal points are the ones where the circle hits the x-axis (on its diameter)
+  //   this.idealPt1 = new HPoint(center+distance, 0.0);
+  //   this.idealPt2 = new HPoint(center-distance, 0.0);
+  //   // calculate drawing info
+  //   this.confDiscArray = confDiscArray(this.idealPt1, this.idealPt2);
+  //   this.projDiscArray = projDiscArray(this.idealPt1, this.idealPt2);
+  //   // polar point in projective model is at the Euclidean center of the conformal model's geodesic
+  //   this.projPolarPt = new ProjectiveDiscPoint(this.confDiscArray[0], this.confDiscArray[1]);
+  // }
+
+  public HLine(ProjectiveDiscPoint pt1, ProjectiveDiscPoint pt2){
+    // find the two ideal points of the line through pt1, pt2
+    double[] abcArray = ((ComplexNumber)pt1).wedgeProduct((ComplexNumber)pt2);
+    double a = abcArray[0];
+    double b = abcArray[1];
+    double c = abcArray[2];
+    double norm = Math.sqrt(a*a+b*b-c*c);
+    double scale = a*a+b*b;
+    double x1 = (-a*c - b*norm)/scale;
+    double y1 = (-b*c + a*norm)/scale;
+    double x2 = (-a*c + b*norm)/scale;
+    double y2 = (-b*c - a*norm)/scale;
+    this.idealPt1 = new HPoint(new ProjectiveDiscPoint(x1,y1));
+    this.idealPt2 = new HPoint(new ProjectiveDiscPoint(x2,y2));
     this.confDiscArray = confDiscArray(this.idealPt1, this.idealPt2);
+    this.halfPlaneArray = halfPlaneArray(this.idealPt1, this.idealPt2);
     this.projDiscArray = projDiscArray(this.idealPt1, this.idealPt2);
-    // polar point in projective model is at the Euclidean center of the conformal model's geodesic
-    this.projPolarPt = new ComplexNumber(this.confDiscArray[0], this.confDiscArray[1]);
+    this.projPolarPt = new ProjectiveDiscPoint(this.confDiscArray[0], this.confDiscArray[1]);
   }
+
+  public HLine(ProjectiveDiscPoint pt1, HPoint pt2){
+    this(pt1, pt2.projDiscPt);
+  }
+  public HLine(HPoint pt1, ProjectiveDiscPoint pt2){
+    this(pt1.projDiscPt, pt2);
+  }
+  public HLine(HPoint pt1, HPoint pt2){
+    this(pt1.projDiscPt, pt2.projDiscPt);
+  }
+
+
   public double[] projDiscArray(HPoint idealPt1, HPoint idealPt2){
     // information needed to draw the line in the projective disc
     // just returns the two ideal points (x1,y1,x2,y2), endpoints of the line
@@ -48,41 +71,32 @@ public class HLine{
     // derived from formula found here: https://en.wikipedia.org/wiki/Poincar%C3%A9_disk_model
     double a = (u2-v2)/(u1*v2-u2*v1);
     double b = -(u1-v1)/(u1*v2-u2*v1);
-    outArray[0] = -a; // center xb
+    outArray[0] = -a; // center x
     outArray[1] = -b; // center y
     outArray[2] = Math.sqrt(a*a+b*b-1); // circle radius
     // outArray[3] = 0; // arc angle, not using this yet, just drawing the whole circle
     return outArray;
   }
+
+  public double[] halfPlaneArray(HPoint idealPt1, HPoint idealPt2){
+    double[] outArray = new double[2];
+    UpperHalfPlanePoint pt1 = idealPt1.halfPlanePt;
+    UpperHalfPlanePoint pt2 = idealPt2.halfPlanePt;
+    // find the two ideal points (on the x-axis) whose geodesic passes through pt1 and pt2
+    // first, I will find the center of the circle whose arc is that geodesic
+    double diffX = pt2.realPart-pt1.realPart;
+    double diffY = pt2.imagPart-pt1.imagPart;
+    double center = (diffY/(-diffX))*(diffY/2 - pt2.imagPart) + pt1.realPart + diffX/2;
+    // now I will find the radius of that circle
+    double distance = Math.sqrt(Math.pow((pt1.realPart - center), 2) + Math.pow(pt1.imagPart, 2));
+    outArray[0] = center;
+    outArray[1] = distance;
+    return outArray;
+  }
   public HLine perpendicularThrough(HPoint point){
     // this is easiest in the projective model
     // Take a line from the polar point to this line, then find the ideal points where it intersects the unit circle.
-    // I did a bunch of nasty equations, let's see how badly I messed them up
-    
-    double x1 = point.projDiscPt.realPart;
-    double y1 = point.projDiscPt.imagPart;
-    double x2 = this.projPolarPt.realPart;
-    double y2 = this.projPolarPt.imagPart;
-
-    // Use the equations (y-y1) =  m(x-x1) and x^2+y^2=1 and solve the resulting quadratic
-    double m = (y2 - y1) / (x2 - x1);
-    // Coefficients of the quadratic in x
-    double a = 1+m*m;
-    double b = 2*(y1*m-m*m*x1);
-    double c = m*m*x1*x1+y1*y1-2*y1*m*x1-1;
-    // Two solutions using the quadratic formula
-    double pt1_x = (-b + Math.sqrt(b*b - 4*a*c))/(2*a);
-    double pt1_y = 1 - pt1_x*pt1_x;
-    double pt2_x = (-b - Math.sqrt(b*b - 4*a*c))/(2*a);
-    double pt2_y = 1 - pt2_x*pt2_x;
-
-    // double pt1_x = (m*m*x1 - m*y1 + Math.sqrt(-x1*x1*m*m-2*x1*y1*m*m*m+2*x1*y1*m*m+2*x1*y1-y1*y1+m*m+1))/(1+m*m);
-    // double pt1_y = 1 - pt1_x*pt1_x;
-    // double pt2_x = (m*m*x1 - m*y1 - Math.sqrt(-x1*x1*m*m-2*x1*y1*m*m*m+2*x1*y1*m*m+2*x1*y1-y1*y1+m*m+1))/(1+m*m);
-    // double pt2_y = 1 - pt2_x*pt2_x;
-    ProjectiveDiscPoint pt1 = new ProjectiveDiscPoint(pt1_x, pt1_y);
-    ProjectiveDiscPoint pt2 = new ProjectiveDiscPoint(pt2_x, pt2_y);
-    return new HLine(new HPoint(pt1), new HPoint(pt2));
+    return new HLine(this.projPolarPt, point);
   }
   public HPoint markDistance(HPoint onLinePt, double distance){
     // using conformal disc, transform point to center, then mark out ln(distance) along the line, then transform back.

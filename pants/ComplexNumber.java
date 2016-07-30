@@ -36,4 +36,17 @@ public class ComplexNumber{
   public double squareDist(ComplexNumber other){
     return Math.pow(this.realPart - other.realPart, 2)+Math.pow(this.imagPart - other.imagPart, 2);
   }
+  public double[] wedgeProduct(ComplexNumber pt){
+    // finding coefficients (ax+by+c0) of the plane through the lines defined by this point and the other point
+    //  in the linear model of R3
+    double x1 = this.realPart;
+    double y1 = this.imagPart;
+    double x2 = pt.realPart;
+    double y2 = pt.imagPart;
+    double[] abcArray = new double[3];
+    abcArray[0] = y1 - y2;
+    abcArray[1] = x2 - x1;
+    abcArray[2] = x1*y2 - x2*y1;
+    return abcArray;
+  }
 }

@@ -3,12 +3,12 @@ HPoint p2;
 HLine ln1;
 
 int convert(double x){
-  // convert to drawing scale
+  // convert to drawing scale (pixels in window rather than -1 to 1)
   return round((float)x * (width/2));
 }
 
 ComplexNumber unconvert(float x, float y){
-  // convert coordinates to back to math scale
+  // convert coordinates to back to math scale (-1 to 1 rather than pixels in window)
   return new ComplexNumber(((double)x)/(width/2), ((double)y)/(width/2));
 }
 
@@ -25,7 +25,6 @@ void drawPtUHP(HPoint pt){
 
 void drawLineCD(HLine ln){
   double[] arr = ln.confDiscArray;
-  println(arr);   
   ellipse(convert(arr[0]), convert(arr[1]), convert(arr[2])*2, convert(arr[2])*2);
 }
 
@@ -40,6 +39,10 @@ void drawLinePD(HLine ln){
 
 void drawPtPD(HPoint pt){
   ellipse( convert(pt.projDiscPt.realPart), convert(pt.projDiscPt.imagPart), 2, 2);
+}
+
+void drawPtPD(ComplexNumber pt){
+  ellipse( convert(pt.realPart), convert(pt.imagPart), 2, 2);
 }
 
 void setup(){
@@ -65,7 +68,7 @@ void draw(){
   if (mouse_location.squareNorm() > 1.0) {
     p2 = new HPoint(1.0, 1.0);
   } else {
-    ProjectiveDiscPoint pt = new ProjectiveDiscPoint(mouse_location);
+    ConformalDiscPoint pt = new ConformalDiscPoint(mouse_location);
     p2 = new HPoint(pt);
   }
   HLine ln = new HLine(p2, p1);
@@ -79,13 +82,16 @@ void draw(){
   drawLinePD(ln_perp);
   drawPtPD(ln.idealPt1);
   drawPtPD(ln.idealPt2);
+  drawPtPD(ln.projPolarPt);
 
   // draw conformal disc geodesics in blue
-  // stroke(0, 0, 255);
-  // drawPtCD(p1);
-  // drawPtCD(p2);
-  // drawLineCD(ln);
-  // drawLineCD(ln_perp);
-  // drawPtCD(ln.idealPt1);
-  // drawPtCD(ln.idealPt2);
+  stroke(0, 0, 255);
+  drawPtCD(p1);
+  drawPtCD(p2);
+  drawLineCD(ln);
+  drawLineCD(ln_perp);
+  drawPtCD(ln.idealPt1);
+  drawPtCD(ln.idealPt2);
+
+  stroke(255,0,0);
 }
