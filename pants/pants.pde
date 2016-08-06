@@ -83,6 +83,7 @@ void draw(){
   drawPtPD(ln.idealPt1);
   drawPtPD(ln.idealPt2);
   drawPtPD(ln.projPolarPt);
+  drawPtPD(ln.markDistance(p2, 1.0));
 
   // draw conformal disc geodesics in blue
   stroke(0, 0, 255);
@@ -92,6 +93,7 @@ void draw(){
   drawLineCD(ln_perp);
   drawPtCD(ln.idealPt1);
   drawPtCD(ln.idealPt2);
+  drawPtCD(ln.markDistance(p2, 1.0));
 
   stroke(255,0,0);
 }

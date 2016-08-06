@@ -99,8 +99,24 @@ public class HLine{
     return new HLine(this.projPolarPt, point);
   }
   public HPoint markDistance(HPoint onLinePt, double distance){
-    // using conformal disc, transform point to center, then mark out ln(distance) along the line, then transform back.
-    // TODO implement this
-    return new HPoint(0.0,0.0);
+    // x coordinates of ideal points
+    double x1 = this.halfPlaneArray[0] - this.halfPlaneArray[1];
+    double x2 = this.halfPlaneArray[0] + this.halfPlaneArray[1];
+    // write an isometry mapping the ideal points of the line to 0 and infinity in the half plane model
+    double d = 1.0;
+    double b = -(x1*x2)/(x1+x2);
+    double a = -b/x1;
+    double c = -d/x2;
+    LinearFractionalIsometry isom = new LinearFractionalIsometry(a, b, c, d);
+    LinearFractionalIsometry isomInverse = isom.inverse();
+    // apply the isometry
+    ComplexNumber centeredPoint = isom.apply((ComplexNumber)onLinePt.halfPlanePt);
+    double y = centeredPoint.imagPart;
+    // move y*ln(distance) either up or down depending on the boolean parameter counterclockwise
+    double newY;
+    newY = y*Math.exp(distance);
+    // apply the inverse
+    ComplexNumber newPoint = isomInverse.apply(new ComplexNumber(0.0, newY));
+    return new HPoint(new UpperHalfPlanePoint(newPoint));
   }
 }

@@ -24,6 +24,9 @@ public class ComplexNumber{
     double imagPart = (this.realPart * other.imagPart) + (this.imagPart * other.realPart);
     return new ComplexNumber(realPart, imagPart);
   }
+  public ComplexNumber times(double other){
+    return new ComplexNumber(this.realPart*other, this.imagPart*other);
+  }
   public ComplexNumber multInverse(){
     double squareNorm = this.squareNorm();
     double realPart = this.realPart / squareNorm;
