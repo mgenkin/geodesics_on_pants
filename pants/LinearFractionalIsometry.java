@@ -15,6 +15,14 @@ public class LinearFractionalIsometry{
     this.c = new ComplexNumber(c, 0.0);
     this.d = new ComplexNumber(d, 0.0);
   }
+  public LinearFractionalIsometry compose(LinearFractionalIsometry other){
+    // multiply matrices
+    ComplexNumber a = this.a.times(other.a).plus(this.b.times(other.b));
+    ComplexNumber b = this.a.times(other.b).plus(this.b.times(other.d));
+    ComplexNumber c = this.c.times(other.a).plus(this.d.times(other.c));
+    ComplexNumber d = this.c.times(other.b).plus(this.d.times(other.d));
+    return new LinearFractionalIsometry(a, b, c, d);
+  }
   public ComplexNumber apply(ComplexNumber z){
     // z -> (az+b)/(cz+d)
     ComplexNumber numerator = z.times(a).plus(b);

@@ -95,13 +95,27 @@ public class HLine{
   }
   public HLine perpendicularThrough(HPoint point){
     // this is easiest in the projective model
-    // Take a line from the polar point to this line, then find the ideal points where it intersects the unit circle.
-    return new HLine(this.projPolarPt, point);
+    // Take a line from the polar point to this line
+    // But first we need to figure out which way to point it
+    // Need to see if the polar point is to the right or left of the vector from idealPt1 to idealPt2
+    // First, subtract idealPt1 to get get the vectors starting from zero
+    double pt1ToPt2X = this.idealPt2.projDiscPt.realPart - this.idealPt1.projDiscPt.realPart;
+    double pt1ToPt2Y = this.idealPt2.projDiscPt.imagPart - this.idealPt1.projDiscPt.imagPart;
+    double pt1ToPolarX = this.projPolarPt.realPart - this.idealPt1.projDiscPt.realPart;
+    double pt1ToPolarY = this.projPolarPt.imagPart - this.idealPt1.projDiscPt.imagPart;
+    // now check if the dot product of pt1ToPolar rotated by 90 degrees with pt1ToPt2 is > or < 0
+    double rotDotProduct = pt1ToPt2X*(-pt1ToPolarY)+pt1ToPt2Y*(pt1ToPolarX);
+    // our rule will be to always turn left
+    if (rotDotProduct > 0){
+      return new HLine(point, this.projPolarPt);
+    } else {
+      return new HLine(this.projPolarPt, point);
+    }
   }
   public HPoint markDistance(HPoint onLinePt, double distance){
     // x coordinates of ideal points
-    double x1 = this.halfPlaneArray[0] - this.halfPlaneArray[1];
-    double x2 = this.halfPlaneArray[0] + this.halfPlaneArray[1];
+    double x1 = this.idealPt1.halfPlanePt.realPart;
+    double x2 = this.idealPt2.halfPlanePt.realPart;
     // write an isometry mapping the ideal points of the line to 0 and infinity in the half plane model
     double d = 1.0;
     double b = -(x1*x2)/(x1+x2);
@@ -118,5 +132,29 @@ public class HLine{
     // apply the inverse
     ComplexNumber newPoint = isomInverse.apply(new ComplexNumber(0.0, newY));
     return new HPoint(new UpperHalfPlanePoint(newPoint));
+  }
+  public HLineSegment segment(HPoint endpoint1, HPoint endpoint2){
+    return new HLineSegment(endpoint1, endpoint2);
+  }
+  public HIsometry reflectAcross(){
+    // THIS DOESNT WORK RIGHT NOW
+    // this process is described in https://en.wikipedia.org/wiki/M%C3%B6bius_transformation#Specifying_a_transformation_by_three_points
+    ComplexNumber z1 = (ComplexNumber)this.idealPt1.confDiscPt;
+    ComplexNumber z2 = (ComplexNumber)this.idealPt2.confDiscPt;
+    ComplexNumber z3 = new ComplexNumber(this.confDiscArray[0], this.confDiscArray[1]);
+    // first, find the isometry that sends z1 -> 0, z2 -> 1, z3 -> infinity
+    LinearFractionalIsometry toZeroOneInf = new LinearFractionalIsometry(
+      z2.plus(z3.times(-1.0)),
+      z1.times(-1.0).times(z2.plus(z3.times(-1.0))),
+      z2.plus(z1.times(-1.0)),
+      z3.times(-1.0).times(z2.plus(z1.times(-1.0))));
+    // now, find the inverse of the isometry that sends 0 -> z1, 1 -> z2, infinity ->infinity
+    // oh no, that's gonna be hard to plug in!
+    LinearFractionalIsometry oppositeIsom = new LinearFractionalIsometry(
+      z2.plus(z3.times(-1.0)),
+      z1.times(-1.0).times(z2.plus(z3.times(-1.0))),
+      z2.plus(z1.times(-1.0)),
+      z3.times(-1.0).times(z2.plus(z1.times(-1.0)))).inverse();    
+    return new HIsometry(new LinearFractionalIsometry(0.0,0.0,0.0,0.0));//just so the compiler doesn't complain
   }
 }

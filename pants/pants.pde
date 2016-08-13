@@ -1,6 +1,3 @@
-HPoint p1 = new HPoint(0.01, 0.01);
-HPoint p2;
-HLine ln1;
 
 int convert(double x){
   // convert to drawing scale (pixels in window rather than -1 to 1)
@@ -12,29 +9,43 @@ ComplexNumber unconvert(float x, float y){
   return new ComplexNumber(((double)x)/(width/2), ((double)y)/(width/2));
 }
 
-void drawLineUHP(HLine ln){
+void drawLnUHP(HLine ln){
   // TODO: implement line if you get Infinity
   double[] arr = ln.halfPlaneArray; 
   arc(convert(arr[0]), 0, convert(arr[1])*2, convert(arr[1])*2, 0, PI);
-  ellipse( convert(arr[0]), 0, 2, 2);
+}
+
+void drawSgUHP(HLineSegment sg){
+  double[] arr = sg.halfPlaneArray; 
+  // arc(convert(arr[0]), 0, convert(arr[1])*2, convert(arr[1])*2, arr[2], arr[3]);
 }
 
 void drawPtUHP(HPoint pt){
   ellipse( convert(pt.halfPlanePt.realPart), convert(pt.halfPlanePt.imagPart), 2, 2);
 }
 
-void drawLineCD(HLine ln){
+void drawLnCD(HLine ln){
   double[] arr = ln.confDiscArray;
   ellipse(convert(arr[0]), convert(arr[1]), convert(arr[2])*2, convert(arr[2])*2);
+}
+
+void drawSgCD(HLineSegment sg){
+  double[] arr = sg.confDiscArray;
+  arc(convert(arr[0]), convert(arr[1]), convert(arr[2])*2, convert(arr[2])*2, (float)arr[3], (float)arr[4]);
 }
 
 void drawPtCD(HPoint pt){
   ellipse( convert(pt.confDiscPt.realPart), convert(pt.confDiscPt.imagPart), 2, 2);
 }
 
-void drawLinePD(HLine ln){
+void drawLnPD(HLine ln){
   double[] arr = ln.projDiscArray; 
   line(convert(arr[0]), convert(arr[1]), convert(arr[2]), convert(arr[3]));
+}
+
+void drawSgPD(HLineSegment sg){
+  double[] arr = sg.projDiscArray; 
+  line(convert(arr[4]), convert(arr[5]), convert(arr[6]), convert(arr[7]));
 }
 
 void drawPtPD(HPoint pt){
@@ -48,10 +59,13 @@ void drawPtPD(ComplexNumber pt){
 void setup(){
   size(500,500);
   noFill();
+  // frameRate(1);
   // translate(width/2, width/2);
   // rotate(PI);
 }
 
+HPoint zeroPt = new HPoint(new ProjectiveDiscPoint(0.2, 0.5));
+HPoint pt;
 void draw(){
   background(255);
   stroke(0);
@@ -66,34 +80,26 @@ void draw(){
   ComplexNumber mouse_location = unconvert(mouseX_shifted, mouseY_shifted);
   
   if (mouse_location.squareNorm() > 1.0) {
-    p2 = new HPoint(1.0, 1.0);
+    pt = new HPoint(new ProjectiveDiscPoint(0.1, 0.5));
   } else {
-    ConformalDiscPoint pt = new ConformalDiscPoint(mouse_location);
-    p2 = new HPoint(pt);
+    ProjectiveDiscPoint point = new ProjectiveDiscPoint(mouse_location);
+    pt = new HPoint(point);
   }
-  HLine ln = new HLine(p2, p1);
-  HLine ln_perp = ln.perpendicularThrough(p2);
+  HLine ln = new HLine(zeroPt, pt);
 
-  // draw projective disc geodesics in green
+  HRightHexagon hexagon = new HRightHexagon(2.0, 2.0, 2.0, ln, pt);
+
   stroke(0, 255, 0);
-  drawPtPD(p1);
-  drawPtPD(p2);
-  drawLinePD(ln);
-  drawLinePD(ln_perp);
-  drawPtPD(ln.idealPt1);
-  drawPtPD(ln.idealPt2);
-  drawPtPD(ln.projPolarPt);
-  drawPtPD(ln.markDistance(p2, 1.0));
+  for(int i = 0; i < 6; i++){
+    drawPtPD(hexagon.vertices[i]);
+    drawSgPD(hexagon.sides[i]);
+  }
 
-  // draw conformal disc geodesics in blue
   stroke(0, 0, 255);
-  drawPtCD(p1);
-  drawPtCD(p2);
-  drawLineCD(ln);
-  drawLineCD(ln_perp);
-  drawPtCD(ln.idealPt1);
-  drawPtCD(ln.idealPt2);
-  drawPtCD(ln.markDistance(p2, 1.0));
+  for(int i = 0; i < 6; i++){
+    drawPtCD(hexagon.vertices[i]);
+    drawSgCD(hexagon.sides[i]);
+  }
+  // arc(50, 50, 50, 50, -(2.0/3)*PI, (2.0/3)*PI);
 
-  stroke(255,0,0);
 }
