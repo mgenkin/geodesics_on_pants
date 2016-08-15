@@ -56,4 +56,15 @@ public class HRightHexagon{
     this.vertices = vertices;
     this.sides = sides;
     }
+    public HRightHexagon(double sideA, double sideB, double sideC, HLineSegment[] sides, HPoint[] vertices){
+    this.sideA = sideA;
+    this.sideB = sideB;
+    this.sideC = sideC;
+    this.sideA_op = (Math.cosh(sideB)*Math.cosh(sideC) + Math.cosh(sideA)) / (Math.sinh(sideB)*Math.sinh(sideC));
+    this.sideB_op = (Math.cosh(sideA)*Math.cosh(sideC) + Math.cosh(sideB)) / (Math.sinh(sideA)*Math.sinh(sideC));
+    this.sideC_op = (Math.cosh(sideA)*Math.cosh(sideB) + Math.cosh(sideC)) / (Math.sinh(sideA)*Math.sinh(sideB));
+    // find the other vertices and store the sides as a sequence of HLines
+    this.vertices = vertices;
+    this.sides = sides;
+    }
   }

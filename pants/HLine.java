@@ -5,18 +5,7 @@ public class HLine{
   public double[] halfPlaneArray = new double[2]; // half plane drawing info, this computation is done right in the constructor
   public double[] confDiscArray = new double[5];  // conformal disc drawing info
   public double[] projDiscArray = new double[4];  // projective disc drawing info
-
-
-    
-  //   // the ideal points are the ones where the circle hits the x-axis (on its diameter)
-  //   this.idealPt1 = new HPoint(center+distance, 0.0);
-  //   this.idealPt2 = new HPoint(center-distance, 0.0);
-  //   // calculate drawing info
-  //   this.confDiscArray = confDiscArray(this.idealPt1, this.idealPt2);
-  //   this.projDiscArray = projDiscArray(this.idealPt1, this.idealPt2);
-  //   // polar point in projective model is at the Euclidean center of the conformal model's geodesic
-  //   this.projPolarPt = new ProjectiveDiscPoint(this.confDiscArray[0], this.confDiscArray[1]);
-  // }
+  public HIsometry reflectionAcross;
 
   public HLine(ProjectiveDiscPoint pt1, ProjectiveDiscPoint pt2){
     // find the two ideal points of the line through pt1, pt2
@@ -36,6 +25,7 @@ public class HLine{
     this.halfPlaneArray = halfPlaneArray(this.idealPt1, this.idealPt2);
     this.projDiscArray = projDiscArray(this.idealPt1, this.idealPt2);
     this.projPolarPt = new ProjectiveDiscPoint(this.confDiscArray[0], this.confDiscArray[1]);
+    this.reflectionAcross = this.reflectionAcross();
   }
 
   public HLine(ProjectiveDiscPoint pt1, HPoint pt2){
@@ -136,25 +126,13 @@ public class HLine{
   public HLineSegment segment(HPoint endpoint1, HPoint endpoint2){
     return new HLineSegment(endpoint1, endpoint2);
   }
-  public HIsometry reflectAcross(){
-    // THIS DOESNT WORK RIGHT NOW
-    // this process is described in https://en.wikipedia.org/wiki/M%C3%B6bius_transformation#Specifying_a_transformation_by_three_points
-    ComplexNumber z1 = (ComplexNumber)this.idealPt1.confDiscPt;
-    ComplexNumber z2 = (ComplexNumber)this.idealPt2.confDiscPt;
-    ComplexNumber z3 = new ComplexNumber(this.confDiscArray[0], this.confDiscArray[1]);
-    // first, find the isometry that sends z1 -> 0, z2 -> 1, z3 -> infinity
-    LinearFractionalIsometry toZeroOneInf = new LinearFractionalIsometry(
-      z2.plus(z3.times(-1.0)),
-      z1.times(-1.0).times(z2.plus(z3.times(-1.0))),
-      z2.plus(z1.times(-1.0)),
-      z3.times(-1.0).times(z2.plus(z1.times(-1.0))));
-    // now, find the inverse of the isometry that sends 0 -> z1, 1 -> z2, infinity ->infinity
-    // oh no, that's gonna be hard to plug in!
-    LinearFractionalIsometry oppositeIsom = new LinearFractionalIsometry(
-      z2.plus(z3.times(-1.0)),
-      z1.times(-1.0).times(z2.plus(z3.times(-1.0))),
-      z2.plus(z1.times(-1.0)),
-      z3.times(-1.0).times(z2.plus(z1.times(-1.0)))).inverse();    
-    return new HIsometry(new LinearFractionalIsometry(0.0,0.0,0.0,0.0));//just so the compiler doesn't complain
+  public HIsometry reflectionAcross(){
+    // Use inversion through a circle in the conformal disc
+    ComplexNumber center = new ComplexNumber(this.confDiscArray[0], this.confDiscArray[1]);
+    ComplexNumber radius = new ComplexNumber(this.confDiscArray[2], 0.0);
+    LinearFractionalIsometry toUnitCircle = new LinearFractionalIsometry(new ComplexNumber(1.0), center.times(-1.0), new ComplexNumber(0.0), radius);
+    LinearFractionalIsometry inversionInUnitCircle = new LinearFractionalIsometry(0.0, 1.0, 1.0, 0.0);
+    LinearFractionalIsometry fromUnitCircle = toUnitCircle.inverse();
+    return new HIsometry(fromUnitCircle.compose(inversionInUnitCircle.compose(toUnitCircle)));
   }
 }

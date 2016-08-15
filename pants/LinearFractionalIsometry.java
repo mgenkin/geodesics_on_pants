@@ -17,6 +17,7 @@ public class LinearFractionalIsometry{
   }
   public LinearFractionalIsometry compose(LinearFractionalIsometry other){
     // multiply matrices
+    // does this transformation AFTER other transformation
     ComplexNumber a = this.a.times(other.a).plus(this.b.times(other.b));
     ComplexNumber b = this.a.times(other.b).plus(this.b.times(other.d));
     ComplexNumber c = this.c.times(other.a).plus(this.d.times(other.c));

@@ -87,19 +87,23 @@ void draw(){
   }
   HLine ln = new HLine(zeroPt, pt);
 
-  HRightHexagon hexagon = new HRightHexagon(2.0, 2.0, 2.0, ln, pt);
+  HRightHexagon hexagon = new HRightHexagon(1.0, 2.0, 2.0, ln, pt);
+  HRightHexagon reflectedHexagon = hexagon.sides[0].reflectionAcross.apply(hexagon);
 
   stroke(0, 255, 0);
   for(int i = 0; i < 6; i++){
     drawPtPD(hexagon.vertices[i]);
     drawSgPD(hexagon.sides[i]);
+    drawPtPD(reflectedHexagon.vertices[i]);
+    drawSgPD(reflectedHexagon.sides[i]);
   }
 
   stroke(0, 0, 255);
   for(int i = 0; i < 6; i++){
     drawPtCD(hexagon.vertices[i]);
     drawSgCD(hexagon.sides[i]);
+    drawPtCD(reflectedHexagon.vertices[i]);
+    drawSgCD(reflectedHexagon.sides[i]);
   }
-  // arc(50, 50, 50, 50, -(2.0/3)*PI, (2.0/3)*PI);
 
 }
