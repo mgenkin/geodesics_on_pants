@@ -1,3 +1,6 @@
+ComplexNumber mouse_location;
+HPoint anchorPt = new HPoint(new UpperHalfPlanePoint(0.0, 0.0));
+HPoint centerPt = new HPoint(new UpperHalfPlanePoint(0.0, 0.0));
 
 int convert(double x){
   // convert to drawing scale (pixels in window rather than -1 to 1)
@@ -56,8 +59,22 @@ void drawPtPD(ComplexNumber pt){
   ellipse( convert(pt.realPart), convert(pt.imagPart), 2, 2);
 }
 
+void mousePressed(){
+  float mouseX_shifted = mouseX-width/2;
+  float mouseY_shifted = width/2 - mouseY;
+  mouse_location = unconvert(mouseX_shifted, mouseY_shifted);
+  anchorPt = new HPoint(new ConformalDiscPoint(mouse_location));
+}
+
+void mouseDragged(){
+  float mouseX_shifted = mouseX-width/2;
+  float mouseY_shifted = width/2 - mouseY;
+  mouse_location = unconvert(mouseX_shifted, mouseY_shifted);
+  centerPt = new HPoint(new ConformalDiscPoint(mouse_location));
+}
+
 void setup(){
-  size(500,500);
+  size(800, 800);
   noFill();
   // frameRate(1);
   // translate(width/2, width/2);
@@ -75,34 +92,57 @@ void draw(){
   // draw the unit disc (for the conformal or projective model)
   ellipse(0, 0, width, width);
   // get mouse location in math coordinates
-  float mouseX_shifted = mouseX-width/2;
-  float mouseY_shifted = width/2 - mouseY;
-  ComplexNumber mouse_location = unconvert(mouseX_shifted, mouseY_shifted);
   
-  if (mouse_location.squareNorm() > 1.0) {
-    pt = new HPoint(new ProjectiveDiscPoint(0.1, 0.5));
-  } else {
-    ProjectiveDiscPoint point = new ProjectiveDiscPoint(mouse_location);
-    pt = new HPoint(point);
-  }
-  HLine ln = new HLine(zeroPt, pt);
 
-  HRightHexagon hexagon = new HRightHexagon(1.0, 1.0, 1.0, ln, pt);
-  HRightHexagon reflectedHexagon = hexagon.sides[0].reflectionAcross.apply(hexagon);
+  HLine ln = new HLine(anchorPt, centerPt);
 
-  stroke(0, 255, 0);
-  for(int i = 0; i < 6; i++){
-    drawPtPD(hexagon.vertices[i]);
-    drawSgPD(hexagon.sides[i]);
-    drawPtPD(reflectedHexagon.vertices[i]);
-    drawSgPD(reflectedHexagon.sides[i]);
-  }
+  HRightHexagon hexagon = new HRightHexagon(1.0, 1.0, 1.0, ln, centerPt);
+  HPants pants = new HPants(hexagon);
+  CurveWord word = new CurveWord("abbba", pants);
+
+  // stroke(0, 255, 0);
+  // for(int i = 0; i < 10; i++){
+  //   drawPtPD(pants.verticesToDraw[i]);
+  //   drawSgPD(pants.sidesToDraw[i]);
+  // }
 
   stroke(0, 0, 255);
-  for(int i = 0; i < 6; i++){
-    drawPtCD(hexagon.vertices[i]);
-    drawSgCD(hexagon.sides[i]);
-    drawPtCD(reflectedHexagon.vertices[i]);
-    drawSgCD(reflectedHexagon.sides[i]);
+  for(int i = 0; i < 10; i++){
+    drawPtCD(pants.verticesToDraw[i]);
+    drawSgCD(pants.sidesToDraw[i]);
+  }
+  stroke(255,0,0);
+  // HPants pantsa = pants.a_translate.apply(pants);
+  // HPants pantsA = pants.a_translate.inverse().apply(pants);
+  // HPants pantsaa = pants.a_translate.apply(pantsa);
+  // HPants pantsAA = pants.a_translate.inverse().apply(pantsA);
+  // HPants pantsaaa = pants.a_translate.apply(pantsaa);
+  // HPants pantsAAA = pants.a_translate.inverse().apply(pantsAA);
+  // for(int i = 0; i < 10; i++){
+  //   drawPtCD(pantsa.verticesToDraw[i]);
+  //   drawSgCD(pantsa.sidesToDraw[i]);
+  // }
+  // for(int i = 0; i < 10; i++){
+  //   drawPtCD(pantsA.verticesToDraw[i]);
+  //   drawSgCD(pantsA.sidesToDraw[i]);
+  // }
+  // for(int i = 0; i < 10; i++){
+  //   drawPtCD(pantsaa.verticesToDraw[i]);
+  //   drawSgCD(pantsaa.sidesToDraw[i]);
+  // }
+  // for(int i = 0; i < 10; i++){
+  //   drawPtCD(pantsAA.verticesToDraw[i]);
+  //   drawSgCD(pantsAA.sidesToDraw[i]);
+  // }
+  // for(int i = 0; i < 10; i++){
+  //   drawPtCD(pantsaaa.verticesToDraw[i]);
+  //   drawSgCD(pantsaaa.sidesToDraw[i]);
+  // }
+  // for(int i = 0; i < 10; i++){
+  //   drawPtCD(pantsAAA.verticesToDraw[i]);
+  //   drawSgCD(pantsAAA.sidesToDraw[i]);
+  // }
+  for(int i = 0; i < word.word.length(); i++){
+    drawLnCD(word.axes[i]);
   }
 }

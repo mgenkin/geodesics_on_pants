@@ -22,17 +22,33 @@ public class LinearFractionalIsometry{
     // multiply matrices
     // does this transformation AFTER other transformation
     if(this.conjugate){
-      ComplexNumber a = this.a.times(other.a.conj()).plus(this.b.times(other.b.conj()));
-      ComplexNumber b = this.a.times(other.b.conj()).plus(this.b.times(other.d.conj()));
-      ComplexNumber c = this.c.times(other.a.conj()).plus(this.d.times(other.c.conj()));
-      ComplexNumber d = this.c.times(other.b.conj()).plus(this.d.times(other.d.conj()));
-      return new LinearFractionalIsometry(a, b, c, d, true);
+      if(other.conjugate){
+        ComplexNumber a = this.a.times(other.a.conj()).plus(this.b.times(other.c.conj()));
+        ComplexNumber b = this.a.times(other.b.conj()).plus(this.b.times(other.d.conj()));
+        ComplexNumber c = this.c.times(other.a.conj()).plus(this.d.times(other.c.conj()));
+        ComplexNumber d = this.c.times(other.b.conj()).plus(this.d.times(other.d.conj()));
+        return new LinearFractionalIsometry(a, b, c, d);
+      } else {
+        ComplexNumber a = this.a.times(other.a.conj()).plus(this.b.times(other.c.conj()));
+        ComplexNumber b = this.a.times(other.b.conj()).plus(this.b.times(other.d.conj()));
+        ComplexNumber c = this.c.times(other.a.conj()).plus(this.d.times(other.c.conj()));
+        ComplexNumber d = this.c.times(other.b.conj()).plus(this.d.times(other.d.conj()));
+        return new LinearFractionalIsometry(a, b, c, d, true);        
+      }
     } else{
-      ComplexNumber a = this.a.times(other.a).plus(this.b.times(other.b));
-      ComplexNumber b = this.a.times(other.b).plus(this.b.times(other.d));
-      ComplexNumber c = this.c.times(other.a).plus(this.d.times(other.c));
-      ComplexNumber d = this.c.times(other.b).plus(this.d.times(other.d));
-      return new LinearFractionalIsometry(a, b, c, d);
+      if(other.conjugate){
+        ComplexNumber a = this.a.times(other.a).plus(this.b.times(other.c));
+        ComplexNumber b = this.a.times(other.b).plus(this.b.times(other.d));
+        ComplexNumber c = this.c.times(other.a).plus(this.d.times(other.c));
+        ComplexNumber d = this.c.times(other.b).plus(this.d.times(other.d));
+        return new LinearFractionalIsometry(a, b, c, d, true);
+      } else{
+        ComplexNumber a = this.a.times(other.a).plus(this.b.times(other.c));
+        ComplexNumber b = this.a.times(other.b).plus(this.b.times(other.d));
+        ComplexNumber c = this.c.times(other.a).plus(this.d.times(other.c));
+        ComplexNumber d = this.c.times(other.b).plus(this.d.times(other.d));
+        return new LinearFractionalIsometry(a, b, c, d);    
+      }
     }
   }
   public ComplexNumber apply(ComplexNumber z){

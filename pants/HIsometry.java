@@ -30,7 +30,36 @@ public class HIsometry{
         }
         return new HRightHexagon(hx.sideA, hx.sideB, hx.sideC, newSides, newVertices);
     }
+    public HPants apply(HPants pants){
+        return new HPants(this.apply(pants.leftHexagon));
+    }
     public HIsometry compose(HIsometry other){
         return new HIsometry(confDiscIsom.compose(other.confDiscIsom));
+    }
+    public HIsometry inverse(){
+        return new HIsometry(confDiscIsom.inverse());
+    }
+    public HLine axis(){
+        if(this.confDiscIsom.conjugate){
+            return null;
+        } else {
+            // z = ( a-d +-  sqrt[ (d-a)^2 + 4bc ] ) / 2c
+            ComplexNumber a = this.confDiscIsom.a;
+            ComplexNumber b = this.confDiscIsom.b;
+            ComplexNumber c = this.confDiscIsom.c;
+            ComplexNumber d = this.confDiscIsom.d;
+            ComplexNumber discriminant = d.plus(a.times(-1.0)).times(d.plus(a.times(-1.0))).plus(b.times(c.times(4.0)));
+            ComplexNumber pt1 = (a.plus(d.times(-1.0).plus(discriminant.sqrt())).times(c.times(2.0).multInverse()));
+            ComplexNumber pt2 = (a.plus(d.times(-1.0).plus(discriminant.sqrt().times(-1.0))).times(c.times(2.0).multInverse()));
+            // translate point to see if it's in the disc
+            // if it's in the disc, that point is the source.  Otherwise, switch the order
+            // TODO: this is totally cheating and won't always work
+            ComplexNumber testPt = this.confDiscIsom.apply(((ComplexNumber) pt1).times(0.99));
+            if (testPt.norm() < pt1.norm()){
+                return new HLine(new HPoint(new ConformalDiscPoint(pt1)), new HPoint(new ConformalDiscPoint(pt2)));
+            } else {
+                return new HLine(new HPoint(new ConformalDiscPoint(pt2)), new HPoint(new ConformalDiscPoint(pt1)));
+            }
+        }
     }
 }

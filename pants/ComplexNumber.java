@@ -18,6 +18,9 @@ public class ComplexNumber{
     double imagPart = this.imagPart+other.imagPart;
     return new ComplexNumber(realPart, imagPart);
   }
+  public ComplexNumber plus(double other){
+    return this.plus(new ComplexNumber(other, 0.0));
+  }
   public ComplexNumber times(ComplexNumber other){
     //complex multiplication
     double realPart = (this.realPart * other.realPart) - (this.imagPart * other.imagPart);
@@ -39,6 +42,9 @@ public class ComplexNumber{
   public double squareNorm(){
     return Math.pow(this.realPart, 2)+Math.pow(this.imagPart, 2);
   }
+  public double norm(){
+    return Math.sqrt(this.squareNorm());
+  }
   public double squareDist(ComplexNumber other){
     return Math.pow(this.realPart - other.realPart, 2)+Math.pow(this.imagPart - other.imagPart, 2);
   }
@@ -54,5 +60,15 @@ public class ComplexNumber{
     abcArray[1] = x2 - x1;
     abcArray[2] = x1*y2 - x2*y1;
     return abcArray;
+  }
+  public ComplexNumber sqrt(){
+    // returns principal square root
+    if (this.imagPart == 0.0 && this.realPart < 0.0){
+      return new ComplexNumber(0.0, Math.sqrt(-this.realPart));
+    } else {
+      // sqrt(z) = sqrt(norm(z))*(z+norm(z)/norm(z+norm(z)))
+      double r = this.norm();
+      return (this.plus(r).times(1.0/this.plus(r).norm()).times(Math.sqrt(r)));
+    }
   }
 }

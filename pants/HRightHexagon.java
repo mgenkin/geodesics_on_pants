@@ -30,25 +30,25 @@ public class HRightHexagon{
     HLineSegment[] sides = new HLineSegment[6];
     HLine perpLn;
     
-    vertices[5] = centerLn.markDistance(centerPt, -sideA/2.0);
+    vertices[5] = centerLn.markDistance(centerPt, -sideC/2.0);
 
-    vertices[0] = centerLn.markDistance(centerPt, sideA/2.0);
+    vertices[0] = centerLn.markDistance(centerPt, sideC/2.0);
     sides[0] = new HLineSegment(vertices[5], vertices[0]);
     
     perpLn = sides[0].perpendicularThrough(vertices[0]); // line of the next side
-    vertices[1] = perpLn.markDistance(vertices[0], sideC_op);  // next vertex
+    vertices[1] = perpLn.markDistance(vertices[0], sideB_op);  // next vertex
     sides[1] = new HLineSegment(vertices[0], vertices[1]); // next side
 
     perpLn = sides[1].perpendicularThrough(vertices[1]);
-    vertices[2] = perpLn.markDistance(vertices[1], sideB);
+    vertices[2] = perpLn.markDistance(vertices[1], sideA);
     sides[2] = new HLineSegment(vertices[1], vertices[2]);
     
     perpLn = sides[2].perpendicularThrough(vertices[2]);
-    vertices[3] = perpLn.markDistance(vertices[2], sideA_op);
+    vertices[3] = perpLn.markDistance(vertices[2], sideC_op);
     sides[3] = new HLineSegment(vertices[2], vertices[3]);
     
     perpLn = sides[3].perpendicularThrough(vertices[3]);
-    vertices[4] = perpLn.markDistance(vertices[3], sideC);
+    vertices[4] = perpLn.markDistance(vertices[3], sideB);
     sides[4] = new HLineSegment(vertices[3], vertices[4]);
 
     sides[5] = new HLineSegment(vertices[4], vertices[5]);
