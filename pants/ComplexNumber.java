@@ -32,6 +32,9 @@ public class ComplexNumber{
     double realPart = this.realPart / squareNorm;
     double imagPart = - this.imagPart / squareNorm;
     return new ComplexNumber(realPart, imagPart);
+  }  
+  public ComplexNumber conj(){
+    return new ComplexNumber(this.realPart, -this.imagPart);
   }
   public double squareNorm(){
     return Math.pow(this.realPart, 2)+Math.pow(this.imagPart, 2);

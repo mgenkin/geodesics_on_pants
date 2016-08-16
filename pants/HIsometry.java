@@ -13,7 +13,7 @@ public class HIsometry{
     //         (ComplexNumber) out3.confDiscPt);
     // }
     public HPoint apply(HPoint pt){
-        return new HPoint(confDiscIsom.apply((ComplexNumber)pt.confDiscPt));
+        return new HPoint(new ConformalDiscPoint(confDiscIsom.apply((ComplexNumber)pt.confDiscPt)));
     }
     public HLine apply(HLine ln){
         return new HLine(this.apply(ln.idealPt1), this.apply(ln.idealPt2));

@@ -129,10 +129,13 @@ public class HLine{
   public HIsometry reflectionAcross(){
     // Use inversion through a circle in the conformal disc
     ComplexNumber center = new ComplexNumber(this.confDiscArray[0], this.confDiscArray[1]);
-    ComplexNumber radius = new ComplexNumber(this.confDiscArray[2], 0.0);
-    LinearFractionalIsometry toUnitCircle = new LinearFractionalIsometry(new ComplexNumber(1.0), center.times(-1.0), new ComplexNumber(0.0), radius);
-    LinearFractionalIsometry inversionInUnitCircle = new LinearFractionalIsometry(0.0, 1.0, 1.0, 0.0);
-    LinearFractionalIsometry fromUnitCircle = toUnitCircle.inverse();
-    return new HIsometry(fromUnitCircle.compose(inversionInUnitCircle.compose(toUnitCircle)));
+    double radius = this.confDiscArray[2];
+    LinearFractionalIsometry isom = new LinearFractionalIsometry(
+      center, 
+      new ComplexNumber(radius*radius-center.squareNorm(), 0.0), 
+      new ComplexNumber(1.0, 0.0), 
+      center.times(-1.0).conj(), 
+      true); 
+    return new HIsometry(isom);
   }
 }

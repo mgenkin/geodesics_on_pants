@@ -64,7 +64,7 @@ void setup(){
   // rotate(PI);
 }
 
-HPoint zeroPt = new HPoint(new ProjectiveDiscPoint(0.2, 0.5));
+HPoint zeroPt = new HPoint(new ProjectiveDiscPoint(0.0, 0.9));
 HPoint pt;
 void draw(){
   background(255);
@@ -87,7 +87,7 @@ void draw(){
   }
   HLine ln = new HLine(zeroPt, pt);
 
-  HRightHexagon hexagon = new HRightHexagon(1.0, 2.0, 2.0, ln, pt);
+  HRightHexagon hexagon = new HRightHexagon(1.0, 1.0, 1.0, ln, pt);
   HRightHexagon reflectedHexagon = hexagon.sides[0].reflectionAcross.apply(hexagon);
 
   stroke(0, 255, 0);
@@ -105,5 +105,11 @@ void draw(){
     drawPtCD(reflectedHexagon.vertices[i]);
     drawSgCD(reflectedHexagon.sides[i]);
   }
+  println(hexagon.sideA);
+  println(hexagon.sideB);
+  println(hexagon.sideC);
+  println(hexagon.sideA_op);
+  println(hexagon.sideB_op);
+  println(hexagon.sideC_op);
 
 }
