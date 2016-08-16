@@ -105,11 +105,4 @@ void draw(){
     drawPtCD(reflectedHexagon.vertices[i]);
     drawSgCD(reflectedHexagon.sides[i]);
   }
-  println(hexagon.sideA);
-  println(hexagon.sideB);
-  println(hexagon.sideC);
-  println(hexagon.sideA_op);
-  println(hexagon.sideB_op);
-  println(hexagon.sideC_op);
-
 }

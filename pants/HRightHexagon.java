@@ -22,9 +22,9 @@ public class HRightHexagon{
     this.sideA = sideA;
     this.sideB = sideB;
     this.sideC = sideC;
-    this.sideA_op = (Math.cosh(sideB)*Math.cosh(sideC) + Math.cosh(sideA)) / (Math.sinh(sideB)*Math.sinh(sideC));
-    this.sideB_op = (Math.cosh(sideA)*Math.cosh(sideC) + Math.cosh(sideB)) / (Math.sinh(sideA)*Math.sinh(sideC));
-    this.sideC_op = (Math.cosh(sideA)*Math.cosh(sideB) + Math.cosh(sideC)) / (Math.sinh(sideA)*Math.sinh(sideB));
+    this.sideA_op = acosh((Math.cosh(sideB)*Math.cosh(sideC) + Math.cosh(sideA)) / (Math.sinh(sideB)*Math.sinh(sideC)));
+    this.sideB_op = acosh((Math.cosh(sideA)*Math.cosh(sideC) + Math.cosh(sideB)) / (Math.sinh(sideA)*Math.sinh(sideC)));
+    this.sideC_op = acosh((Math.cosh(sideA)*Math.cosh(sideB) + Math.cosh(sideC)) / (Math.sinh(sideA)*Math.sinh(sideB)));
     // find the other vertices and store the sides as a sequence of HLines
     HPoint[] vertices = new HPoint[6];
     HLineSegment[] sides = new HLineSegment[6];
@@ -60,11 +60,14 @@ public class HRightHexagon{
     this.sideA = sideA;
     this.sideB = sideB;
     this.sideC = sideC;
-    this.sideA_op = (Math.cosh(sideB)*Math.cosh(sideC) + Math.cosh(sideA)) / (Math.sinh(sideB)*Math.sinh(sideC));
-    this.sideB_op = (Math.cosh(sideA)*Math.cosh(sideC) + Math.cosh(sideB)) / (Math.sinh(sideA)*Math.sinh(sideC));
-    this.sideC_op = (Math.cosh(sideA)*Math.cosh(sideB) + Math.cosh(sideC)) / (Math.sinh(sideA)*Math.sinh(sideB));
+    this.sideA_op = acosh((Math.cosh(sideB)*Math.cosh(sideC) + Math.cosh(sideA)) / (Math.sinh(sideB)*Math.sinh(sideC)));
+    this.sideB_op = acosh((Math.cosh(sideA)*Math.cosh(sideC) + Math.cosh(sideB)) / (Math.sinh(sideA)*Math.sinh(sideC)));
+    this.sideC_op = acosh((Math.cosh(sideA)*Math.cosh(sideB) + Math.cosh(sideC)) / (Math.sinh(sideA)*Math.sinh(sideB)));
     // find the other vertices and store the sides as a sequence of HLines
     this.vertices = vertices;
     this.sides = sides;
     }
+    private static double acosh(double x) { 
+      return Math.log(x + Math.sqrt(x*x - 1.0)); 
+    } 
   }
