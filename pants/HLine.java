@@ -138,4 +138,21 @@ public class HLine{
       true); 
     return new HIsometry(isom);
   }
+  public HPoint intersectPt(HLine other){
+    // find intersection point in the projective model
+    // get the two normal vectors of the planes in R3
+    double[] abcArray1 = ((ComplexNumber)this.idealPt1.projDiscPt).wedgeProduct((ComplexNumber)this.idealPt2.projDiscPt);
+    double a1 = abcArray1[0];
+    double b1 = abcArray1[1];
+    double c1 = abcArray1[2];
+    double[] abcArray2 = ((ComplexNumber)other.idealPt1.projDiscPt).wedgeProduct((ComplexNumber)other.idealPt2.projDiscPt);
+    double a2 = abcArray2[0];
+    double b2 = abcArray2[1];
+    double c2 = abcArray2[2];
+    // the vector perpendicular to both is the cross product
+    double a = b1*c2 - c1*b2;
+    double b = c1*a2 - a1*c2;
+    double c = a1*b2 - b1*a2;
+    return new HPoint(new ProjectiveDiscPoint(new ComplexNumber(a/c, b/c)));
+  }
 }

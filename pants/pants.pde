@@ -98,7 +98,7 @@ void draw(){
 
   HRightHexagon hexagon = new HRightHexagon(1.0, 1.0, 1.0, ln, centerPt);
   HPants pants = new HPants(hexagon);
-  CurveWord word = new CurveWord("abbba", pants);
+  CurveWord word = new CurveWord("abAB", pants);
 
   // stroke(0, 255, 0);
   // for(int i = 0; i < 10; i++){
@@ -111,38 +111,9 @@ void draw(){
     drawPtCD(pants.verticesToDraw[i]);
     drawSgCD(pants.sidesToDraw[i]);
   }
+
   stroke(255,0,0);
-  // HPants pantsa = pants.a_translate.apply(pants);
-  // HPants pantsA = pants.a_translate.inverse().apply(pants);
-  // HPants pantsaa = pants.a_translate.apply(pantsa);
-  // HPants pantsAA = pants.a_translate.inverse().apply(pantsA);
-  // HPants pantsaaa = pants.a_translate.apply(pantsaa);
-  // HPants pantsAAA = pants.a_translate.inverse().apply(pantsAA);
-  // for(int i = 0; i < 10; i++){
-  //   drawPtCD(pantsa.verticesToDraw[i]);
-  //   drawSgCD(pantsa.sidesToDraw[i]);
-  // }
-  // for(int i = 0; i < 10; i++){
-  //   drawPtCD(pantsA.verticesToDraw[i]);
-  //   drawSgCD(pantsA.sidesToDraw[i]);
-  // }
-  // for(int i = 0; i < 10; i++){
-  //   drawPtCD(pantsaa.verticesToDraw[i]);
-  //   drawSgCD(pantsaa.sidesToDraw[i]);
-  // }
-  // for(int i = 0; i < 10; i++){
-  //   drawPtCD(pantsAA.verticesToDraw[i]);
-  //   drawSgCD(pantsAA.sidesToDraw[i]);
-  // }
-  // for(int i = 0; i < 10; i++){
-  //   drawPtCD(pantsaaa.verticesToDraw[i]);
-  //   drawSgCD(pantsaaa.sidesToDraw[i]);
-  // }
-  // for(int i = 0; i < 10; i++){
-  //   drawPtCD(pantsAAA.verticesToDraw[i]);
-  //   drawSgCD(pantsAAA.sidesToDraw[i]);
-  // }
   for(int i = 0; i < word.word.length(); i++){
-    drawLnCD(word.axes[i]);
+    drawSgCD(word.axisSegments[i]);
   }
 }

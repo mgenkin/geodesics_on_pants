@@ -69,4 +69,57 @@ public class HLineSegment extends HLine{
     // append starting and ending of absolute angle
     return new double[1];
   }
+  public HPoint intersectPt(HLineSegment other){
+    HPoint point = super.intersectPt((HLine) other);
+    double ptX = point.projDiscPt.realPart;
+    double x1 = this.endpoint1.projDiscPt.realPart;
+    double x2 = this.endpoint2.projDiscPt.realPart;
+    double x3 = other.endpoint1.projDiscPt.realPart;
+    double x4 = other.endpoint2.projDiscPt.realPart;
+    boolean between = true;
+    if(ptX < x1){
+      if (ptX<x2){
+        between = false;
+      } 
+    } else {
+      if (ptX>x2){
+        between = false;
+      }
+    }
+    if(ptX < x3){
+      if (ptX<x4){
+        between = false;
+      } 
+    } else {
+      if (ptX>x4){
+        between = false;
+      }
+    }
+    if (between){
+      return point;
+    } else{
+      return null;
+    }
+  }
+  public HPoint intersectPt(HLine other){
+    HPoint point = super.intersectPt(other);
+    double ptX = point.projDiscPt.realPart;
+    double x1 = this.endpoint1.projDiscPt.realPart;
+    double x2 = this.endpoint2.projDiscPt.realPart;
+    boolean between = true;
+    if(ptX < x1){
+      if (ptX<x2){
+        between = false;
+      } 
+    } else {
+      if (ptX>x2){
+        between = false;
+      }
+    }
+    if (between){
+      return point;
+    } else{
+      return null;
+    }
+  }
 }

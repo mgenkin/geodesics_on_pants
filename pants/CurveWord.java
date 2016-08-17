@@ -3,6 +3,7 @@ public class CurveWord{
     public HIsometry[] shiftedIsometries;
     public HPants pants;
     public HLine[] axes;
+    public HLineSegment[] axisSegments;
     public CurveWord(String word, HPants pants){
         this.word = word;
         this.pants = pants;
@@ -33,6 +34,28 @@ public class CurveWord{
         this.axes = new HLine[this.word.length()];
         for(int i = 0; i < this.word.length(); i++){
             this.axes[i] = this.shiftedIsometries[i].axis();
+        }
+
+        // get endpoints for the axes
+        this.axisSegments = new HLineSegment[this.word.length()];
+        for(int i = 0; i < this.word.length(); i++){
+            HLine ln = this.axes[i];
+            HPoint endpoint1 = new HPoint(new ProjectiveDiscPoint(0.0, 0.0));
+            HPoint endpoint2 = new HPoint(new ProjectiveDiscPoint(0.0, 0.0));
+            boolean doneWith1 = false;
+            for(int j = 0; j < 10; j++){
+                HLineSegment side = this.pants.sidesToDraw[j];
+                HPoint pt = side.intersectPt(ln);
+                if(pt != null){
+                    if (doneWith1){
+                        endpoint2 = pt;
+                    } else {
+                        endpoint1 = pt;
+                        doneWith1 = true;
+                    }
+                }
+            }
+            this.axisSegments[i] = new HLineSegment(endpoint1, endpoint2);
         }
     }
 }
