@@ -121,6 +121,7 @@ void draw(){
     fill(0);
     scale(1, -1);
     text(word_string, width/2-200, -height/2+50);
+    scale(1, -1);
     noFill();
   }
 
