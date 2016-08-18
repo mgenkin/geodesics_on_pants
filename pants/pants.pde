@@ -1,6 +1,17 @@
+
 ComplexNumber mouse_location;
-HPoint anchorPt = new HPoint(new UpperHalfPlanePoint(0.0, 0.0));
-HPoint centerPt = new HPoint(new UpperHalfPlanePoint(0.0, 0.0));
+HPoint anchorPt = new HPoint(new ConformalDiscPoint(0.01, 0.9));
+HPoint centerPt = new HPoint(new ConformalDiscPoint(0.01, 0.0));
+HLine ln = new HLine(anchorPt, centerPt);
+HRightHexagon hexagon;// = new HRightHexagon(a, b, c, ln, centerPt);  //Jimmy
+HPants pants;// = new HPants(hexagon);
+String word_string = "";
+CurveWord word;// = new CurveWord("ab", pants);
+Slider aSlider;
+Slider bSlider;
+Slider cSlider;
+double minValue = 0.1;
+double maxValue = 5.0;
 
 int convert(double x){
   // convert to drawing scale (pixels in window rather than -1 to 1)
@@ -63,42 +74,55 @@ void mousePressed(){
   float mouseX_shifted = mouseX-width/2;
   float mouseY_shifted = width/2 - mouseY;
   mouse_location = unconvert(mouseX_shifted, mouseY_shifted);
-  anchorPt = new HPoint(new ConformalDiscPoint(mouse_location));
+  if (mouse_location.squareNorm() < 1.05){
+    anchorPt = new HPoint(new ConformalDiscPoint(mouse_location));    
+  }
 }
 
 void mouseDragged(){
   float mouseX_shifted = mouseX-width/2;
   float mouseY_shifted = width/2 - mouseY;
   mouse_location = unconvert(mouseX_shifted, mouseY_shifted);
-  centerPt = new HPoint(new ConformalDiscPoint(mouse_location));
+  if (mouse_location.squareNorm() < 1.05){
+    centerPt = new HPoint(new ConformalDiscPoint(mouse_location));    
+  }
+  if (aSlider.inSlider(mouseX, mouseY)){
+    aSlider.updateSlider(mouseX);
+  } else if (bSlider.inSlider(mouseX, mouseY)){
+    bSlider.updateSlider(mouseX);
+  } else if (cSlider.inSlider(mouseX, mouseY)){
+    cSlider.updateSlider(mouseX);
+  }
 }
 
 void setup(){
-  size(800, 800);
+  size(700, 700);
+  aSlider = new Slider(minValue, maxValue, 0, 0, 80, 20);
+  bSlider = new Slider(minValue, maxValue, 0, 20, 80, 20);
+  cSlider = new Slider(minValue, maxValue, 0, 40, 80, 20);
   noFill();
-  // frameRate(1);
-  // translate(width/2, width/2);
-  // rotate(PI);
 }
 
-HPoint zeroPt = new HPoint(new ProjectiveDiscPoint(0.0, 0.9));
-HPoint pt;
 void draw(){
   background(255);
   stroke(0);
   // set up x,y axes oriented properly with 0 in the center
+  pushMatrix();
   translate(width/2, width/2);
   scale(1, -1);
   // draw the unit disc (for the conformal or projective model)
   ellipse(0, 0, width, width);
-  // get mouse location in math coordinates
-  
 
-  HLine ln = new HLine(anchorPt, centerPt);
-
-  HRightHexagon hexagon = new HRightHexagon(1.0, 1.0, 1.0, ln, centerPt);
-  HPants pants = new HPants(hexagon);
-  CurveWord word = new CurveWord("abAB", pants);
+  ln = new HLine(anchorPt, centerPt);
+  hexagon = new HRightHexagon(aSlider.value(), bSlider.value(), cSlider.value(), ln, centerPt);  //Jimmy  
+  pants = new HPants(hexagon);
+  if(word_string.length()>0){
+    word = new CurveWord(word_string, pants);
+    fill(0);
+    scale(1, -1);
+    text(word_string, width/2-200, -height/2+50);
+    noFill();
+  }
 
   // stroke(0, 255, 0);
   // for(int i = 0; i < 10; i++){
@@ -109,11 +133,119 @@ void draw(){
   stroke(0, 0, 255);
   for(int i = 0; i < 10; i++){
     drawPtCD(pants.verticesToDraw[i]);
-    drawSgCD(pants.sidesToDraw[i]);
+  }
+  drawSgCD(pants.sidesToDraw[0]);
+  drawSgCD(pants.sidesToDraw[5]);
+  drawSgCD(pants.sidesToDraw[2]);
+  drawSgCD(pants.sidesToDraw[7]);
+  drawSgCD(pants.sidesToDraw[4]);
+  drawSgCD(pants.sidesToDraw[9]);
+
+  stroke(0, 255, 0); // a
+  drawSgCD(pants.sidesToDraw[1]);
+  drawSgCD(pants.sidesToDraw[6]);
+  stroke(255, 0, 255); // b
+  drawSgCD(pants.sidesToDraw[3]);
+  drawSgCD(pants.sidesToDraw[8]);
+  stroke(0, 255, 255); // c
+  drawSgCD(pants.leftHexagon.sides[0]);
+  
+  if(word_string.length()>0){
+    stroke(255,0,0);
+    for(int i = 0; i < word.word.length(); i++){
+      drawSgCD(word.axisSegments[i]);
+    }
   }
 
-  stroke(255,0,0);
-  for(int i = 0; i < word.word.length(); i++){
-    drawSgCD(word.axisSegments[i]);
+  popMatrix(); // draw sliders
+  stroke(0, 255, 0); // a
+  aSlider.drawSlider();
+  stroke(255, 0, 255); // b
+  bSlider.drawSlider();
+  stroke(0, 255, 255); // c
+  cSlider.drawSlider();  
+}
+
+void keyTyped()
+{
+  if(key=='a'){
+    if(word_string.length()!= 0 && word_string.charAt(word_string.length()-1) == 'A'){
+      word_string = word_string.substring(0, word_string.length()-1);
+    } else if (word_string.length()!= 0 && word_string.charAt(0) == 'A'){
+      word_string = word_string.substring(1, word_string.length());
+    } else{
+      word_string += 'a';
+    }
+  }
+  if(key=='b'){
+    if(word_string.length()!= 0 && word_string.charAt(word_string.length()-1) == 'B'){
+      word_string = word_string.substring(0, word_string.length()-1);
+    } else if (word_string.length()!= 0 && word_string.charAt(0) == 'B'){
+      word_string = word_string.substring(1, word_string.length());
+    } else{
+      word_string += 'b';
+    }
+  }
+  if(key=='A'){
+    if(word_string.length()!= 0 && word_string.charAt(word_string.length()-1) == 'a'){
+      word_string = word_string.substring(0, word_string.length()-1);
+    } else if (word_string.length()!= 0 && word_string.charAt(0) == 'a'){
+      word_string = word_string.substring(1, word_string.length());
+    } else{
+      word_string += 'A';
+    }
+  }
+  if(key=='B'){
+    if(word_string.length()!= 0 && word_string.charAt(word_string.length()-1) == 'b'){
+      word_string = word_string.substring(0, word_string.length()-1);
+    } else if (word_string.length()!= 0 && word_string.charAt(0) == 'b'){
+      word_string = word_string.substring(1, word_string.length());
+    } else{
+      word_string += 'B';
+    }
+  }
+  if(key==BACKSPACE ){
+    if (word_string.length() > 0){
+      word_string = word_string.substring(0, word_string.length()-1);
+    }
+  }
+
+}
+
+class Slider{
+  double minValue = 0.0;
+  double maxValue = 0.0;
+  double proportion = 0.2;
+  int x = 0;
+  int y = 0;
+  int w = 0;
+  int h = 0;
+  public Slider(double minValue, double maxValue, int x, int y, int w, int h){
+    this.minValue = minValue;
+    this.maxValue = maxValue;
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+  }
+  public void drawSlider(){
+    line(x, y+h/2, x+w, y+h/2);
+    line((int) (x+(proportion*w)), y, (int) (x+(proportion*w)), y+h);
+    fill(0);
+    text(""+String.format("%.2f", this.value()), x+w, y+h);
+    noFill();
+  }
+  public void updateSlider(int xPos){
+    this.proportion = (double)(xPos-this.x)/this.w;
+  }
+  public boolean inSlider(int xPos, int yPos){
+    if ((x<xPos && xPos< x+w) && (y<yPos && yPos<y+h)){
+      return true;
+    } else{
+      return false;
+    }
+  }
+  public double value(){
+    return this.minValue + (this.maxValue-this.minValue)*this.proportion;
   }
 }
