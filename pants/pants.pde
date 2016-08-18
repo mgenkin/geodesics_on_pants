@@ -172,8 +172,6 @@ void keyTyped()
   if(key=='a'){
     if(word_string.length()!= 0 && word_string.charAt(word_string.length()-1) == 'A'){
       word_string = word_string.substring(0, word_string.length()-1);
-    } else if (word_string.length()!= 0 && word_string.charAt(0) == 'A'){
-      word_string = word_string.substring(1, word_string.length());
     } else{
       word_string += 'a';
     }
@@ -181,8 +179,6 @@ void keyTyped()
   if(key=='b'){
     if(word_string.length()!= 0 && word_string.charAt(word_string.length()-1) == 'B'){
       word_string = word_string.substring(0, word_string.length()-1);
-    } else if (word_string.length()!= 0 && word_string.charAt(0) == 'B'){
-      word_string = word_string.substring(1, word_string.length());
     } else{
       word_string += 'b';
     }
@@ -190,8 +186,6 @@ void keyTyped()
   if(key=='A'){
     if(word_string.length()!= 0 && word_string.charAt(word_string.length()-1) == 'a'){
       word_string = word_string.substring(0, word_string.length()-1);
-    } else if (word_string.length()!= 0 && word_string.charAt(0) == 'a'){
-      word_string = word_string.substring(1, word_string.length());
     } else{
       word_string += 'A';
     }
@@ -199,8 +193,6 @@ void keyTyped()
   if(key=='B'){
     if(word_string.length()!= 0 && word_string.charAt(word_string.length()-1) == 'b'){
       word_string = word_string.substring(0, word_string.length()-1);
-    } else if (word_string.length()!= 0 && word_string.charAt(0) == 'b'){
-      word_string = word_string.substring(1, word_string.length());
     } else{
       word_string += 'B';
     }
