@@ -11,7 +11,7 @@ Slider aSlider;
 Slider bSlider;
 Slider cSlider;
 double minValue = 0.1;
-double maxValue = 5.0;
+double maxValue = 10.0;
 
 int convert(double x){
   // convert to drawing scale (pixels in window rather than -1 to 1)
@@ -125,34 +125,28 @@ void draw(){
     noFill();
   }
 
-  // stroke(0, 255, 0);
-  // for(int i = 0; i < 10; i++){
-  //   drawPtPD(pants.verticesToDraw[i]);
-  //   drawSgPD(pants.sidesToDraw[i]);
-  // }
-
-  stroke(0, 0, 255);
+  stroke(255, 100, 100);
   for(int i = 0; i < 10; i++){
     drawPtCD(pants.verticesToDraw[i]);
   }
   drawSgCD(pants.sidesToDraw[0]);
   drawSgCD(pants.sidesToDraw[5]);
   drawSgCD(pants.sidesToDraw[2]);
-  drawSgCD(pants.sidesToDraw[7]);
+  drawSgCD(pants.sidesToDraw[7]); 
   drawSgCD(pants.sidesToDraw[4]);
   drawSgCD(pants.sidesToDraw[9]);
 
   stroke(0, 255, 0); // a
   drawSgCD(pants.sidesToDraw[1]);
   drawSgCD(pants.sidesToDraw[6]);
-  stroke(255, 0, 255); // b
+  stroke(0, 0, 255); // b
   drawSgCD(pants.sidesToDraw[3]);
   drawSgCD(pants.sidesToDraw[8]);
-  stroke(0, 255, 255); // c
+  stroke(255, 0, 255); // c
   drawSgCD(pants.leftHexagon.sides[0]);
   
   if(word_string.length()>0){
-    stroke(255,0,0);
+    stroke(100);
     for(int i = 0; i < word.word.length(); i++){
       drawSgCD(word.axisSegments[i]);
     }
@@ -161,9 +155,9 @@ void draw(){
   popMatrix(); // draw sliders
   stroke(0, 255, 0); // a
   aSlider.drawSlider();
-  stroke(255, 0, 255); // b
+  stroke(0, 0, 255); // b
   bSlider.drawSlider();
-  stroke(0, 255, 255); // c
+  stroke(255, 0, 255); // c
   cSlider.drawSlider();  
 }
 
