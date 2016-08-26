@@ -610,8 +610,7 @@ class HPoint{
   } 
 }class UpperHalfPlanePoint extends ComplexNumber{
   public UpperHalfPlanePoint(double realPart,double imagPart){
-    this.realPart = realPart;
-    this.imagPart = imagPart;
+    super(realPart, imagPart);
     // if (imagPart < 0.0 - 10*Math.ulp(0.0)){
     //   throw new IllegalArgumentException("Imaginary part of upper half-plane point cannot be negative, you wanted "+realPart+", "+imagPart);
     // }
