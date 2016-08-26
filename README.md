@@ -1,6 +1,6 @@
 # Geodesics On Pants
 
-This is a sketch in Processing 3.1 to visualize the geodesic representatives of curve homotopy classes in the 3-holed sphere.
+This is a sketch in Processing 3.1 to visualize the geodesic representatives of curve homotopy classes in the 3-holed sphere.  Huge thanks to Jimmy Mathews at Stony Brook for guiding me through this process.
 
 To try it out, download and install Processing and open the pants.pde in the pants folder (make sure the other java files in the folder are open in the other tabs).  What you will see is the fundamental octagon of the 3-holed sphere visualized in the Poincare disk.  The red segments are the boundary components, and the blue and green segments are identified with the other segment of their color to make the pair of pants.
 
