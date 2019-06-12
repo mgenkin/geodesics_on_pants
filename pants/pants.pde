@@ -6,7 +6,9 @@ HLine ln = new HLine(anchorPt, centerPt);
 HRightHexagon hexagon;// = new HRightHexagon(a, b, c, ln, centerPt);  //Jimmy
 HPants pants;// = new HPants(hexagon);
 String word_string = "";
+String word_string2 = "";
 CurveWord word;// = new CurveWord("ab", pants);
+CurveWord word2;// = new CurveWord("ab", pants);
 Slider aSlider;
 Slider bSlider;
 Slider cSlider;
@@ -124,6 +126,14 @@ void draw(){
     scale(1, -1);
     noFill();
   }
+  if(word_string2.length()>0){
+    word2 = new CurveWord(word_string2, pants);
+    fill(0);
+    scale(1, -1);
+    text(word_string2, width/2-200, -height/2+100);
+    scale(1, -1);
+    noFill();
+  }
 
   stroke(255, 100, 100);
   for(int i = 0; i < 10; i++){
@@ -146,9 +156,16 @@ void draw(){
   drawSgCD(pants.leftHexagon.sides[0]);
   
   if(word_string.length()>0){
-    stroke(100);
+    stroke(42, 165, 165);
     for(int i = 0; i < word.word.length(); i++){
       drawSgCD(word.axisSegments[i]);
+    }
+  }
+  
+  if(word_string2.length()>0){
+    stroke(165, 42, 42);
+    for(int i = 0; i < word2.word.length(); i++){
+      drawSgCD(word2.axisSegments[i]);
     }
   }
 
@@ -194,6 +211,40 @@ void keyTyped()
   if(key==BACKSPACE ){
     if (word_string.length() > 0){
       word_string = word_string.substring(0, word_string.length()-1);
+    }
+  }
+
+  if(key=='z'){
+    if(word_string2.length()!= 0 && word_string2.charAt(word_string2.length()-1) == 'A'){
+      word_string2 = word_string2.substring(0, word_string2.length()-1);
+    } else{
+      word_string2 += 'a';
+    }
+  }
+  if(key=='x'){
+    if(word_string2.length()!= 0 && word_string2.charAt(word_string2.length()-1) == 'B'){
+      word_string2 = word_string2.substring(0, word_string2.length()-1);
+    } else{
+      word_string2 += 'b';
+    }
+  }
+  if(key=='Z'){
+    if(word_string2.length()!= 0 && word_string2.charAt(word_string2.length()-1) == 'a'){
+      word_string2 = word_string2.substring(0, word_string2.length()-1);
+    } else{
+      word_string2 += 'A';
+    }
+  }
+  if(key=='X'){
+    if(word_string2.length()!= 0 && word_string2.charAt(word_string2.length()-1) == 'b'){
+      word_string2 = word_string2.substring(0, word_string2.length()-1);
+    } else{
+      word_string2 += 'B';
+    }
+  }
+  if(key==']'){
+    if (word_string2.length() > 0){
+      word_string2 = word_string2.substring(0, word_string2.length()-1);
     }
   }
 
